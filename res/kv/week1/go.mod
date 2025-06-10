@@ -1,4 +1,4 @@
-module github.com/teivah/thecodercafe/kv
+module github.com/teivah/thecodercafe/kv/week1
 
 go 1.21.4
 
