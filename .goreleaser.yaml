@@ -1,0 +1,22 @@
+version: 2
+
+builds:
+- id: kv-client
+  main: .            # since go.mod is in res/kv/client
+  binary: kv-client
+  env: [CGO_ENABLED=0]
+  goos: [linux, darwin, windows]
+  goarch: [amd64, arm64]
+
+archives:
+- id: default
+  name_template: "{{ .ProjectName }}-{{ .Os }}-{{ .Arch }}"
+  format_overrides:
+  - goos: windows
+    format: zip
+  files:
+  - README.md
+  - LICENSE*
+
+checksum:
+  name_template: "checksums.txt"
