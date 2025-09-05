@@ -2,7 +2,7 @@ version: 2
 
 builds:
 - id: kv-client
-  main: ./res/kv/client   # path to your module with go.mod + main.go
+  main: ./res/kv/client   # tell goreleaser where the go.mod + main.go are
   binary: kv-client
   env: [CGO_ENABLED=0]
   goos: [linux, darwin, windows]

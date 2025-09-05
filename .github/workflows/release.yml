@@ -17,11 +17,12 @@ jobs:
         go-version: '1.22'
 
     - name: Verify build works
-      run: go build ./res/kv/client
+      working-directory: res/kv/client
+      run: go build .
 
     - uses: goreleaser/goreleaser-action@v6
       with:
         version: v2
-        args: release --clean
+        args: release --clean --config .goreleaser.yaml
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
