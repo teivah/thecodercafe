@@ -16,12 +16,12 @@ jobs:
       with:
         go-version: '1.22'
 
-    - name: Sanity check
+    - name: Verify build works
       run: go build ./res/kv/client
 
     - uses: goreleaser/goreleaser-action@v6
       with:
         version: v2
-        args: release --clean --config ./res/kv/client/.goreleaser.yaml
+        args: release --clean
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
