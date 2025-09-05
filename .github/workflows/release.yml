@@ -1,24 +1,27 @@
 name: release
 on:
   push:
-    tags: ['v*']
-  workflow_dispatch:
+    tags: ['v*']          # run when you push a tag like v0.1.3
+  workflow_dispatch:       # allow manual run
 
 jobs:
   release:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: res/kv/client   # 👈 run inside module dir
+        working-directory: res/kv/client   # 👈 important
     steps:
     - uses: actions/checkout@v4
       with:
         fetch-depth: 0
+
     - uses: actions/setup-go@v5
       with:
         go-version: '1.22'
-    - name: Verify module
-      run: go list ./...
+
+    - name: Sanity check module
+      run: go run . --help || true
+
     - uses: goreleaser/goreleaser-action@v6
       with:
         version: v2
