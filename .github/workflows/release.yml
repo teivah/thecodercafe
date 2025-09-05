@@ -1,15 +1,15 @@
 name: release
 on:
   push:
-    tags: ['v*']          # run when you push a tag like v0.1.0
-  workflow_dispatch:       # adds a manual "Run workflow" button
+    tags: ['v*']
+  workflow_dispatch:
 
 jobs:
   release:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: res/kv/client   # 👈 run inside your module folder
+        working-directory: res/kv/client   # 👈 run inside module dir
     steps:
     - uses: actions/checkout@v4
       with:
@@ -17,6 +17,8 @@ jobs:
     - uses: actions/setup-go@v5
       with:
         go-version: '1.22'
+    - name: Verify module
+      run: go list ./...
     - uses: goreleaser/goreleaser-action@v6
       with:
         version: v2
