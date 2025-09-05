@@ -1,22 +1,25 @@
-name: goreleaser
+name: release
 on:
   push:
-    tags: ['v*']
+    tags: ['v*']          # run when you push a tag like v0.1.0
+  workflow_dispatch:       # adds a manual "Run workflow" button
 
 jobs:
   release:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: res/kv/client
+        working-directory: res/kv/client   # 👈 run inside your module folder
     steps:
     - uses: actions/checkout@v4
-      with: { fetch-depth: 0 }
+      with:
+        fetch-depth: 0
     - uses: actions/setup-go@v5
-      with: { go-version: '1.22', cache: true }
+      with:
+        go-version: '1.22'
     - uses: goreleaser/goreleaser-action@v6
       with:
-        version: latest
+        version: v2
         args: release --clean
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
