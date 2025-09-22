@@ -1,6 +1,6 @@
 ---
-name: The Coder Season 1: Bug Fix
-about: Bug fix.
+name: Season 1 Bugfix
+about: Bugfix.
 title: ''
 labels: bugfix
 ---
