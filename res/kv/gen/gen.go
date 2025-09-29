@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
-	"math/rand"
+	"math/rand/v2"
 	"os"
 	"strconv"
 	"strings"
@@ -14,6 +14,8 @@ const (
 	deleteFrequency   = 10
 	notFoundFrequency = 5
 	updateFrequency   = 2
+	keyLength         = 5
+	maxValue          = 1_000
 )
 
 func main() {
@@ -50,13 +52,10 @@ func main() {
 		flag.Usage()
 		os.Exit(1)
 	}
-	if err := run2(lines); err != nil {
-		panic(err)
-	}
 }
 
 func run1(lines int) error {
-	state := make(map[int]int)
+	state := make(map[string]string)
 	sb := strings.Builder{}
 	for i := 0; i < lines; i++ {
 		get := random(getFrequency)
@@ -79,12 +78,12 @@ func run1(lines int) error {
 					continue
 				}
 				k := existingKey(state)
-				v := rand.Int()
+				v := randomValue(maxValue)
 				sb.WriteString(formatPut(k, v))
 				state[k] = v
 			} else {
 				k := unknownKey(state)
-				v := rand.Int()
+				v := randomValue(maxValue)
 				sb.WriteString(formatPut(k, v))
 				state[k] = v
 			}
@@ -94,7 +93,7 @@ func run1(lines int) error {
 }
 
 func run2(lines int) error {
-	state := make(map[int]int)
+	state := make(map[string]string)
 	sb := strings.Builder{}
 	for i := 0; i < lines; i++ {
 		get := random(getFrequency)
@@ -126,12 +125,12 @@ func run2(lines int) error {
 						continue
 					}
 					k := existingKey(state)
-					v := rand.Int()
+					v := randomValue(maxValue)
 					sb.WriteString(formatPut(k, v))
 					state[k] = v
 				} else {
 					k := unknownKey(state)
-					v := rand.Int()
+					v := randomValue(maxValue)
 					sb.WriteString(formatPut(k, v))
 					state[k] = v
 				}
@@ -141,40 +140,52 @@ func run2(lines int) error {
 	return os.WriteFile("input2.txt", []byte(sb.String()), 0644)
 }
 
-func formatGet(key, value int) string {
-	return fmt.Sprintf("GET %d %d\n", key, value)
+func formatGet(key, value string) string {
+	return fmt.Sprintf("GET %s %s\n", key, value)
 }
 
-func formatNotFound(key int) string {
-	return fmt.Sprintf("GET %d NOT_FOUND\n", key)
+func formatNotFound(key string) string {
+	return fmt.Sprintf("GET %s NOT_FOUND\n", key)
 }
 
-func formatPut(key, value int) string {
-	return fmt.Sprintf("PUT %d %d\n", key, value)
+func formatPut(key, value string) string {
+	return fmt.Sprintf("PUT %s %s\n", key, value)
 }
 
-func formatDelete(key int) string {
-	return fmt.Sprintf("DELETE %d\n", key)
+func formatDelete(key string) string {
+	return fmt.Sprintf("DELETE %s\n", key)
 }
 
-func existingKey(state map[int]int) int {
-	keys := make([]int, 0, len(state))
+func randomKey() string {
+	b := make([]byte, keyLength)
+	for i := range b {
+		b[i] = byte('a' + rand.IntN(26)) // v2 uses IntN
+	}
+	return string(b)
+}
+
+func randomValue(max int) string {
+	return strconv.Itoa(rand.IntN(max))
+}
+
+func existingKey(state map[string]string) string {
+	keys := make([]string, 0, len(state))
 	for k := range state {
 		keys = append(keys, k)
 	}
 
-	return keys[rand.Intn(len(keys))]
+	return keys[rand.IntN(len(keys))]
 }
 
-func unknownKey(state map[int]int) int {
+func unknownKey(state map[string]string) string {
 	for {
-		i := rand.Int()
-		if _, contains := state[i]; !contains {
-			return i
+		k := randomKey()
+		if _, contains := state[k]; !contains {
+			return k
 		}
 	}
 }
 
 func random(max int) bool {
-	return rand.Intn(max) == 0
+	return rand.IntN(max) == 0
 }
