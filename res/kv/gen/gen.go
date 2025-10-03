@@ -23,7 +23,7 @@ const (
 func main() {
 	prog := os.Args[0]
 	flag.Usage = func() {
-		fmt.Fprintf(flag.CommandLine.Output(), "usage: %s (input1|input2|input2-scan) <lines>\n", prog)
+		fmt.Fprintf(flag.CommandLine.Output(), "usage: %s (put|put-delete|put-delete-scan) <lines>\n", prog)
 	}
 
 	flag.Parse()
@@ -42,15 +42,15 @@ func main() {
 
 	mode := args[0]
 	switch mode {
-	case "input1":
+	case "put":
 		if err := run1(lines); err != nil {
 			panic(err)
 		}
-	case "input2":
+	case "put-delete":
 		if err := run2(lines); err != nil {
 			panic(err)
 		}
-	case "input2-scan":
+	case "put-delete-scan":
 		if err := run2Scan(lines); err != nil {
 			panic(err)
 		}
@@ -95,7 +95,7 @@ func run1(lines int) error {
 			}
 		}
 	}
-	return os.WriteFile("input1.txt", []byte(sb.String()), 0644)
+	return os.WriteFile("put.txt", []byte(sb.String()), 0644)
 }
 
 func run2(lines int) error {
@@ -143,7 +143,7 @@ func run2(lines int) error {
 			}
 		}
 	}
-	return os.WriteFile("input2.txt", []byte(sb.String()), 0644)
+	return os.WriteFile("put-delete.txt", []byte(sb.String()), 0644)
 }
 
 func run2Scan(lines int) error {
@@ -199,7 +199,7 @@ func run2Scan(lines int) error {
 			}
 		}
 	}
-	return os.WriteFile("input2-scan.txt", []byte(sb.String()), 0644)
+	return os.WriteFile("put-delete-scan.txt", []byte(sb.String()), 0644)
 }
 
 func formatGet(key, value string) string {
@@ -219,7 +219,7 @@ func formatDelete(key string) string {
 }
 
 func formatRange(from, to, keys string) string {
-	return fmt.Sprintf("RANGE %s %s %s\n", from, to, keys)
+	return fmt.Sprintf("SCAN %s %s %s\n", from, to, keys)
 }
 
 func randomKey() string {
