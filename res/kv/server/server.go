@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"io"
 	"net/http"
 	"sync"
@@ -59,6 +60,9 @@ func (s *server) putHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	val := string(b)
+	if _, exists := s.kv[key]; exists {
+		fmt.Println(len(s.kv))
+	}
 	s.kv[key] = val
 	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
 	w.WriteHeader(http.StatusOK)
